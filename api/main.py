@@ -3,10 +3,11 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 import cv2
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app) # 全てのオリジンからのアクセスを許可
 model = None
-
 
 def Load_Model():
     global model
@@ -14,17 +15,26 @@ def Load_Model():
     model = tf.keras.models.load_model('My_model-opt')
     print(' * Loading end')
 
-
-@app.route('/', methods=["GET"])
-def hello():
+# GETテスト用
+@app.route('/get_test', methods=["GET"])
+def get_test():
     response = {
         "success": True,
-        "Content-Type": "application/json",
         "method": "GET"
     }
     return jsonify(response)
 
+# POSTテスト用
+@app.route('/post_test', methods=["POST"])
+def post_test():
+    print(request.data)
+    response = {
+        "success": True,
+        "method": "POST"
+    }
+    return jsonify(response)
 
+# 本体
 @app.route('/face-age-predict', methods=["POST"])
 def predict():
     response = {
@@ -32,7 +42,6 @@ def predict():
         "Content-Type": "application/json"
     }
     try:
-        # print(request.data)
         # 画像データの前処理
         # バイナリファイルのデータ(バイト型)を1次元のnumpy配列に変換
         _bytes = np.frombuffer(request.data, dtype=np.uint8)
@@ -47,6 +56,7 @@ def predict():
 
         # 予測
         pre_age = int(model.predict(img))
+        print("preage: " + str(pre_age))
 
         # レスポンスデータの作成
         response["prediction"] = pre_age
@@ -57,7 +67,6 @@ def predict():
     except Exception as e:
         print(e)  # デバッグ用
         return "error"
-
 
 if __name__ == '__main__':
     Load_Model()

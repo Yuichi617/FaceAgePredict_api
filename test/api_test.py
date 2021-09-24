@@ -6,6 +6,8 @@ import urllib.request
 f = open("33_0_4_20170117201021349.jpg.chip.jpg", "rb")
 reqbody = f.read()
 f.close()
+# print(f)
+# print(reqbody)
 
 # リクエストの作成
 url = "http://127.0.0.1:8080/face-age-predict"

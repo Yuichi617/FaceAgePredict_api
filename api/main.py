@@ -9,12 +9,6 @@ app = Flask(__name__)
 CORS(app) # 全てのオリジンからのアクセスを許可
 model = None
 
-def Load_Model():
-    global model
-    print(" * Loading pre-trained model ...")
-    model = tf.keras.models.load_model('My_model-opt')
-    print(' * Loading end')
-
 # GETテスト用
 @app.route('/get_test', methods=["GET"])
 def get_test():
@@ -68,6 +62,12 @@ def predict():
         print(e)  # デバッグ用
         return "error"
 
+def Load_Model():
+    global model
+    print(" * Loading pre-trained model ...")
+    model = tf.keras.models.load_model('My_model-opt')
+    print(' * Loading end')
+    
 if __name__ == '__main__':
     Load_Model()
     print(" * Flask starting server...")
